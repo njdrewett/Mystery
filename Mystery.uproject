@@ -29,6 +29,10 @@
 			"SupportedTargetPlatforms": [
 				"Win64"
 			]
+		},
+		{
+			"Name": "SyntyRigs",
+			"Enabled": true
 		}
 	]
 }
