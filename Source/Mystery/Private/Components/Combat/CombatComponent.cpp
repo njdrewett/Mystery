@@ -3,6 +3,8 @@
 
 #include "Components/Combat/CombatComponent.h"
 
+#include "GameFramework/Character.h"
+
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
 {
@@ -10,7 +12,8 @@ UCombatComponent::UCombatComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	// ... 
+	characterReference = GetOwner<ACharacter>();
 }
 
 
@@ -30,5 +33,27 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UCombatComponent::attack() {
+	UE_LOG(LogTemp, Warning, TEXT("Combat activate"));
+	if (!canAttack) { return ;}
+
+	canAttack = false;
+
+	if (attackMontages.IsEmpty()) {
+		UE_LOG(LogTemp, Warning, TEXT("No animation montages to play for attack  %s"), *GetOwner()->GetName());
+		return;
+	}
+	
+	characterReference->PlayAnimMontage(attackMontages[comboCounter++]);
+	if (comboCounter > attackMontages.Num()-1) {
+		comboCounter = 0;
+	}
+	
+}
+
+void UCombatComponent::resetAttack() {
+	canAttack = true;
 }
 

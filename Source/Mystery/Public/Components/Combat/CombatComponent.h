@@ -11,6 +11,17 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYSTERY_API UCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
+	UPROPERTY(EditAnyWhere)
+	TArray <UAnimMontage*> attackMontages;
+
+	ACharacter* characterReference;
+
+	UPROPERTY(VisibleAnywhere)
+	int comboCounter {0};
+
+	UPROPERTY(VisibleAnywhere)
+	bool canAttack {true};
+	
 
 public:	
 	// Sets default values for this component's properties
@@ -24,5 +35,10 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION(BlueprintCallable)
+	void attack();
+
+	UFUNCTION(BlueprintCallable)
+	void resetAttack();
+	
 };

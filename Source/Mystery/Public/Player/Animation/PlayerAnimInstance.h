@@ -13,5 +13,17 @@ UCLASS()
 class MYSTERY_API UPlayerAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
-	
+protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool isLockOnMovement {false} ;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float currentDirection {0.0f};	
+
+	UFUNCTION(BlueprintCallable)
+	void updateLockOnTarget(AActor* lockonTarget);
+
+	UFUNCTION(BlueprintCallable)
+	void updateDirection();
 };
