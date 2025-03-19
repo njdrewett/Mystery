@@ -2,6 +2,7 @@
 
 
 #include "Components/Character/StatsComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
@@ -17,10 +18,7 @@ UStatsComponent::UStatsComponent()
 // Called when the game starts
 void UStatsComponent::BeginPlay()
 {
-	Super::BeginPlay();
-
-	// ...
-	
+	Super::BeginPlay();	
 }
 
 
@@ -30,5 +28,16 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UStatsComponent::ReduceHealth(float Amount) {
+
+	UE_LOG(LogActorComponent, Warning, TEXT("'%s' Reducing health "), *GetNameSafe(this));
+	float CurrentHealth = Stats[Health];
+	CurrentHealth -= Amount;
+	Stats[Health] = UKismetMathLibrary::FClamp(
+		CurrentHealth,
+		0,
+		Stats[MaxHealth]);
 }
 

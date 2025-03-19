@@ -2,8 +2,11 @@
 
 
 #include "Components/Combat/TraceComponent.h"
+
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Character/Fighter.h"
+#include "Engine/DamageEvents.h"
 
 // Sets default values for this component's properties
 UTraceComponent::UTraceComponent()
@@ -28,10 +31,10 @@ void UTraceComponent::BeginPlay()
 
 
 // Called every frame
-void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
+void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (!isAttacking) { return ; }
 	// ...
 	FVector startSocketLocation { SkeletalMeshComponent->GetSocketLocation(startSocketName)};
 	FVector endSocketLocation  { SkeletalMeshComponent->GetSocketLocation(endSocketName)};
@@ -76,9 +79,38 @@ false,
 			shapeRotation.Rotator(),
 			1.0f,2.0f);
 		
-		UE_LOG(LogTemp, Display, TEXT("Tick TargetFound Start: %s - End:%s - Rotation: %s"),
-			*startSocketLocation.ToString(),*endSocketLocation.ToString(), *shapeRotation.ToString());
+		// UE_LOG(LogTemp, Display, TEXT("Tick TargetFound Start: %s - End:%s - Rotation: %s"),
+		// 	*startSocketLocation.ToString(),*endSocketLocation.ToString(), *shapeRotation.ToString());
 	}	
+
+	if (hitResults.Num() == 0) { return;}
 	
+	float characterDamage{ 0.0f };
+
+	if (IFighter* fighterReference {Cast<IFighter>(GetOwner())}) {
+		characterDamage = fighterReference->GetDamage();
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), characterDamage);
+
+	for (const FHitResult& Hit: hitResults) {
+		FDamageEvent targetAttackedEvent;
+		AActor* hitActor {Cast<AActor>(Hit.GetActor())};
+
+		if (targetsToIgnore.Contains(hitActor)) { continue; }
+		
+		hitActor->TakeDamage(
+			characterDamage,
+			targetAttackedEvent,
+			GetOwner()->GetInstigatorController(),
+			GetOwner()
+			);
+
+		targetsToIgnore.AddUnique(hitActor);
+	}
+}
+
+void UTraceComponent::handleResetAttack() {
+	targetsToIgnore.Empty();
 }
 

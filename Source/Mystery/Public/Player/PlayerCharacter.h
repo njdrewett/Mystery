@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/ControllableCharacter.h"
+#include "Character/Fighter.h"
 #include "PlayerCharacter.generated.h"
 
 class ULockOnComponent;
@@ -39,5 +40,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };
