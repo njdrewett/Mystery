@@ -8,18 +8,21 @@
 #include "StatsComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom),Blueprintable, BlueprintType, meta=(BlueprintSpawnableComponent) )
 class MYSTERY_API UStatsComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UStatsComponent();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<TEnumAsByte<EStat>, float> Stats;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float staminaRegenerationRate { 10.0f };
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -29,5 +32,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void ReduceHealth(float Amount);	
+	void ReduceHealth(float Amount);
+	
+	void ReduceStatByValue(float Amount, EStat stat, EStat maxStat);
+
+	UFUNCTION(BlueprintCallable)
+	void ReduceStamina(float Amount);	
+
+	UFUNCTION( BlueprintCallable)
+	void RegenerateStamina();
 };

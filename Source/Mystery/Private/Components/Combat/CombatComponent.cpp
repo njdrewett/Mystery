@@ -3,7 +3,9 @@
 
 #include "Components/Combat/CombatComponent.h"
 
+#include "Character/GameCharacter.h"
 #include "GameFramework/Character.h"
+#include "Player/MainPlayer.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -39,6 +41,12 @@ void UCombatComponent::attack() {
 	UE_LOG(LogTemp, Warning, TEXT("Combat activate"));
 	if (!canAttack) { return ;}
 
+	IMainPlayer* mainPlayer = Cast<IMainPlayer>(characterReference);
+	if (!mainPlayer || !mainPlayer->HasStamina(staminaCost)) {
+		UE_LOG(LogTemp, Warning, TEXT("Not enough stamina to attack"));
+		return;
+	}
+	
 	canAttack = false;
 
 	if (attackMontages.IsEmpty()) {
@@ -50,7 +58,7 @@ void UCombatComponent::attack() {
 	if (comboCounter > attackMontages.Num()-1) {
 		comboCounter = 0;
 	}
-	
+	OnAttackPerformedDelegate.Broadcast(staminaCost);
 }
 
 void UCombatComponent::resetAttack() {

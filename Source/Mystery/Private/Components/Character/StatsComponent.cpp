@@ -33,11 +33,31 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 void UStatsComponent::ReduceHealth(float Amount) {
 
 	UE_LOG(LogActorComponent, Warning, TEXT("'%s' Reducing health "), *GetNameSafe(this));
-	float CurrentHealth = Stats[Health];
-	CurrentHealth -= Amount;
-	Stats[Health] = UKismetMathLibrary::FClamp(
-		CurrentHealth,
+	ReduceStatByValue(Amount, Health, MaxHealth);
+}
+
+void UStatsComponent::ReduceStatByValue(float Amount, EStat stat, EStat maxStat) {
+	float CurrentValue = Stats[stat];
+	CurrentValue -= Amount;
+	Stats[stat] = UKismetMathLibrary::FClamp(
+		CurrentValue,
 		0,
-		Stats[MaxHealth]);
+		Stats[maxStat]);
+}
+
+void UStatsComponent::ReduceStamina(float Amount) {
+	UE_LOG(LogActorComponent, Warning, TEXT("'%s' Reducing Stamina "), *GetNameSafe(this));
+	ReduceStatByValue(Amount, Stamina, MaxStamina);
+}
+
+void UStatsComponent::RegenerateStamina() {
+
+	Stats[Stamina] = UKismetMathLibrary::FInterpTo_Constant(
+		Stats[EStat::Stamina],
+		Stats[EStat::MaxStamina],
+		GetWorld()->DeltaTimeSeconds ,
+		staminaRegenerationRate
+		
+		);
 }
 

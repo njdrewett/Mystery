@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MainPlayer.h"
 #include "Character/ControllableCharacter.h"
-#include "Character/Fighter.h"
+#include "Components/Character/PlayerActionsComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class ULockOnComponent;
@@ -12,7 +13,7 @@ class UCombatComponent;
 class UTraceComponent;
 
 UCLASS()
-class MYSTERY_API APlayerCharacter : public AControllableCharacter
+class MYSTERY_API APlayerCharacter : public AControllableCharacter, public IMainPlayer
 {
 	GENERATED_BODY()
 	
@@ -25,6 +26,9 @@ class MYSTERY_API APlayerCharacter : public AControllableCharacter
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UTraceComponent* TraceComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UPlayerActionsComponent* PlayerActionsComponent;
 	
 public:
 	// Sets default values for this character's properties
@@ -40,4 +44,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	virtual bool HasStamina(float cost) const override;
+	
 };

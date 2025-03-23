@@ -3,6 +3,11 @@
 
 #include "Components/Character/PlayerActionsComponent.h"
 
+#include <filesystem>
+
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 // Sets default values for this component's properties
 UPlayerActionsComponent::UPlayerActionsComponent()
 {
@@ -10,7 +15,7 @@ UPlayerActionsComponent::UPlayerActionsComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	
 }
 
 
@@ -19,8 +24,13 @@ void UPlayerActionsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	Character = GetOwner<ACharacter>();
+
+	MovementComponent = Character->GetCharacterMovement();
+
+	if ( !Character->Implements<UMainPlayer>()) { return; }
+
+	IMainPlayer = Cast<class IMainPlayer>(Character);
 }
 
 
@@ -30,5 +40,21 @@ void UPlayerActionsComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UPlayerActionsComponent::sprint() {
+	if (!IMainPlayer->HasStamina(sprintCost)) {
+		walk();
+		return;
+	}
+
+	if (MovementComponent->Velocity.Equals(FVector::ZeroVector, 1)) { return; }
+	MovementComponent->MaxWalkSpeed = sprintSpeed;
+
+	OnSprintDelegate.Broadcast(sprintCost);
+}
+
+void UPlayerActionsComponent::walk() {
+	MovementComponent->MaxWalkSpeed = walkSpeed;
 }
 

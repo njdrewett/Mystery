@@ -15,13 +15,16 @@ APlayerCharacter::APlayerCharacter():Super()
 {
 	// Components
 	LockOnComponent = CreateDefaultSubobject<ULockOnComponent>(TEXT("LockOnComponent"));
-	LockOnComponent->RegisterComponent();
+	//LockOnComponent->RegisterComponent();
 
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
-	CombatComponent->RegisterComponent();
+	//CombatComponent->RegisterComponent();
 
 	TraceComponent = CreateDefaultSubobject<UTraceComponent>(TEXT("TraceComponent"));
-	TraceComponent->RegisterComponent();
+	//TraceComponent->RegisterComponent();
+
+	PlayerActionsComponent = CreateDefaultSubobject<UPlayerActionsComponent>(TEXT("PlayerActionsComponent"));
+	//PlayerActionsComponent->RegisterComponent();
 
 }
 
@@ -38,5 +41,14 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+bool APlayerCharacter::HasStamina(float cost) const {
+	if (!StatsComponent || !StatsComponent->Stats.Contains(Stamina)) {
+		UE_LOG(LogActor, Warning, TEXT("'%s' No stats details for Stamina"), *GetNameSafe(this));
+		return false;
+	}
+	
+	return (StatsComponent->Stats[Stamina] > cost);
 }
 
