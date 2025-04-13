@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Fighter.h"
 #include "Components/Character/StatsComponent.h"
+#include "Components/Combat/TraceComponent.h"
+#include "Components/Combat/CombatComponent.h"
 #include "GameFramework/Character.h"
 #include "GameCharacter.generated.h"
 
@@ -22,9 +24,18 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* deathAnimation;
+
 	/** Components */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UStatsComponent* StatsComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UTraceComponent* TraceComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UCombatComponent* CombatComponent;
 
 public:	
 	// Called every frame
@@ -34,4 +45,11 @@ public:
 	virtual void SetupPlayerInputComponent( UInputComponent* PlayerInputComponent) override;
 
 	virtual float GetDamage() const override;
+
+	UFUNCTION(BlueprintCallable)
+	void handleDeath();
+
+	UFUNCTION()
+	void finishedDeathAnimation();
+
 };

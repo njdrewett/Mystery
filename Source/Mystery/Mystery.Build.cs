@@ -27,7 +27,8 @@ public class Mystery : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", 
 			"CoreUObject", "Engine", "InputCore", "EnhancedInput", 
-			"UnrealEd" // Add this line for test utilities
+			"UnrealEd", // Add this line for test utilities
+			"AIModule"
               });
 		
 

@@ -20,13 +20,7 @@ class MYSTERY_API APlayerCharacter : public AControllableCharacter, public IMain
 	/** Components */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	ULockOnComponent* LockOnComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
-	UCombatComponent* CombatComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
-	UTraceComponent* TraceComponent;
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UPlayerActionsComponent* PlayerActionsComponent;
 	

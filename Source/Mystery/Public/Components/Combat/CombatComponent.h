@@ -37,6 +37,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttackPerformedSignature OnAttackPerformedDelegate;
+
+	float animationDuration;
 	
 protected:
 	// Called when the game starts
@@ -51,5 +53,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void resetAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void randomAttack();
 	
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FTraceSockets.h"
 #include "Components/ActorComponent.h"
 #include "TraceComponent.generated.h"
 
@@ -15,19 +16,7 @@ class MYSTERY_API UTraceComponent : public UActorComponent
 	USkeletalMeshComponent* SkeletalMeshComponent = nullptr;
 
 	UPROPERTY(EditAnywhere)
-	FName startSocketName;
-	
-	UPROPERTY(EditAnywhere)
-	FName endSocketName;
-	
-	UPROPERTY(EditAnywhere)
-	FName rotationSocketName;
-
-	UPROPERTY(EditAnywhere)
-	double boxCollisionLength {30.0};
-	
-	UPROPERTY(EditAnywhere)
-	bool debugMode {false};
+	TArray<FTraceSockets> TraceSockets;
 	
 	TArray<AActor*> targetsToIgnore;
 	

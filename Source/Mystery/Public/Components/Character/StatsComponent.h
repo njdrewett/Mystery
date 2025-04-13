@@ -8,6 +8,11 @@
 #include "StatsComponent.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(
+	FOnHealthZeroSignature,
+	UStatsComponent, onHealthZeroDelegate
+);
+
 UCLASS( ClassGroup=(Custom),Blueprintable, BlueprintType, meta=(BlueprintSpawnableComponent) )
 class MYSTERY_API UStatsComponent : public UActorComponent
 {
@@ -23,6 +28,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float staminaRegenerationRate { 10.0f };
 
+	UPROPERTY(VisibleAnywhere)
+	bool canRegenerateStamina {true};
+
+	UPROPERTY(EditAnywhere)
+	float staminaRegenerationDelay {2.0f};
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthZeroSignature onHealthZeroDelegate;
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -41,4 +55,7 @@ public:
 
 	UFUNCTION( BlueprintCallable)
 	void RegenerateStamina();
+
+	UFUNCTION( )
+	void enableRegenerateStamina();
 };

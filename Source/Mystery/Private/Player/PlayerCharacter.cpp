@@ -16,13 +16,7 @@ APlayerCharacter::APlayerCharacter():Super()
 	// Components
 	LockOnComponent = CreateDefaultSubobject<ULockOnComponent>(TEXT("LockOnComponent"));
 	//LockOnComponent->RegisterComponent();
-
-	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
-	//CombatComponent->RegisterComponent();
-
-	TraceComponent = CreateDefaultSubobject<UTraceComponent>(TEXT("TraceComponent"));
-	//TraceComponent->RegisterComponent();
-
+	
 	PlayerActionsComponent = CreateDefaultSubobject<UPlayerActionsComponent>(TEXT("PlayerActionsComponent"));
 	//PlayerActionsComponent->RegisterComponent();
 

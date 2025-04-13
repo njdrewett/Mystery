@@ -3,6 +3,9 @@
 
 #include "Character/GameCharacter.h"
 
+#include "Components/CapsuleComponent.h"
+#include "Components/Combat/CombatComponent.h"
+
 // Sets default values
 AGameCharacter::AGameCharacter()
 {
@@ -10,8 +13,13 @@ AGameCharacter::AGameCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	// Components
 	StatsComponent = CreateDefaultSubobject<UStatsComponent>(TEXT("StatsComponent"));
-	//StatsComponent->RegisterComponent();
-
+	StatsComponent->RegisterComponent();
+	
+	TraceComponent = CreateDefaultSubobject<UTraceComponent>(TEXT("TraceComponent"));
+	TraceComponent->RegisterComponent();
+	
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	CombatComponent->RegisterComponent();
 }
 
 // Called when the game starts or when spawned
@@ -41,4 +49,33 @@ float AGameCharacter::GetDamage() const {
 		return 0;
 	}
 	return StatsComponent->Stats[Strength];
+}
+
+void AGameCharacter::handleDeath() {
+
+	if (!deathAnimation) { return; }
+
+	float deathDuration { PlayAnimMontage(deathAnimation) };
+
+	FTimerHandle deathAnimationCompletedTimerHandle{};
+
+	GetWorldTimerManager().SetTimer(
+			deathAnimationCompletedTimerHandle,
+			this, &AGameCharacter::finishedDeathAnimation,
+			deathDuration, false
+		);
+
+//	aiControllerReference->GetBrainComponent()->StopLogic("defeated");
+
+	FindComponentByClass<UCapsuleComponent>()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// IMainPlayer* mainPlayer{ GetWorld()->GetFirstPlayerController()->GetPawn<IMainPlayer>()};
+	//
+	// if (!mainPlayer) { return; }
+	//
+	// mainPlayer->endLockOnWithActor(this);
+}
+
+void AGameCharacter::finishedDeathAnimation() {
+	Destroy();
 }

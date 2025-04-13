@@ -25,15 +25,14 @@ class MYSTERY_API UPlayerActionsComponent : public UActorComponent
 	IMainPlayer* IMainPlayer;
 
 	UPROPERTY(EditAnywhere)
-	float sprintSpeed {700.0f};
+	float sprintSpeed {750.0f};
 
 	UPROPERTY(EditAnywhere)
-	float sprintCost {5.0f};
+	float sprintCost {0.5f};
 
 	UPROPERTY(EditAnywhere)
 	float walkSpeed {500.0f};
 
-	
 public:	
 	// Sets default values for this component's properties
 	UPlayerActionsComponent();

@@ -39,6 +39,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::attack() {
 	UE_LOG(LogTemp, Warning, TEXT("Combat activate"));
+
 	if (!canAttack) { return ;}
 
 	IMainPlayer* mainPlayer = Cast<IMainPlayer>(characterReference);
@@ -63,5 +64,12 @@ void UCombatComponent::attack() {
 
 void UCombatComponent::resetAttack() {
 	canAttack = true;
+}
+
+void UCombatComponent::randomAttack() {
+	int RandomIndex {
+		FMath::RandRange(0, attackMontages.Num()-1)
+	};
+	animationDuration = characterReference->PlayAnimMontage(attackMontages[RandomIndex]);
 }
 

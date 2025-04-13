@@ -3,6 +3,7 @@
 
 #include "Components/Character/StatsComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
 UStatsComponent::UStatsComponent()
@@ -34,6 +35,10 @@ void UStatsComponent::ReduceHealth(float Amount) {
 
 	UE_LOG(LogActorComponent, Warning, TEXT("'%s' Reducing health "), *GetNameSafe(this));
 	ReduceStatByValue(Amount, Health, MaxHealth);
+
+	if (Stats[Health] <= 0) {
+		onHealthZeroDelegate.Broadcast();
+	}
 }
 
 void UStatsComponent::ReduceStatByValue(float Amount, EStat stat, EStat maxStat) {
@@ -48,16 +53,36 @@ void UStatsComponent::ReduceStatByValue(float Amount, EStat stat, EStat maxStat)
 void UStatsComponent::ReduceStamina(float Amount) {
 	UE_LOG(LogActorComponent, Warning, TEXT("'%s' Reducing Stamina "), *GetNameSafe(this));
 	ReduceStatByValue(Amount, Stamina, MaxStamina);
+
+	canRegenerateStamina = false;
+
+	FLatentActionInfo flatentInfo {
+		0,
+		100,
+		TEXT("enableRegenerateStamina"),
+		this};
+	
+	UKismetSystemLibrary::RetriggerableDelay(
+		GetWorld(),
+		staminaRegenerationDelay,
+		flatentInfo
+	);
 }
 
 void UStatsComponent::RegenerateStamina() {
 
-	Stats[Stamina] = UKismetMathLibrary::FInterpTo_Constant(
-		Stats[EStat::Stamina],
-		Stats[EStat::MaxStamina],
-		GetWorld()->DeltaTimeSeconds ,
-		staminaRegenerationRate
-		
-		);
+	if (!canRegenerateStamina) { return; }
+
+	if (Stats[Stamina]) {
+		Stats[Stamina] = UKismetMathLibrary::FInterpTo_Constant(
+			Stats[Stamina],
+			Stats[MaxStamina],
+			GetWorld()->DeltaTimeSeconds ,
+			staminaRegenerationRate);
+	}
+}
+
+void UStatsComponent::enableRegenerateStamina() {
+	canRegenerateStamina = true;
 }
 

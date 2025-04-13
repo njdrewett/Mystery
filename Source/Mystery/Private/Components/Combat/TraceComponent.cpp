@@ -36,54 +36,59 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 	if (!isAttacking) { return ; }
 	// ...
-	FVector startSocketLocation { SkeletalMeshComponent->GetSocketLocation(startSocketName)};
-	FVector endSocketLocation  { SkeletalMeshComponent->GetSocketLocation(endSocketName)};
-	FQuat shapeRotation {SkeletalMeshComponent->GetSocketQuaternion(rotationSocketName)};
 
-	TArray<FHitResult> hitResults;
+	TArray<FHitResult> allResults;
+	for (const FTraceSockets sockets : TraceSockets) {
+		FVector startSocketLocation { SkeletalMeshComponent->GetSocketLocation(sockets.startSocketName)};
+		FVector endSocketLocation  { SkeletalMeshComponent->GetSocketLocation(sockets.endSocketName)};
+		FQuat shapeRotation {SkeletalMeshComponent->GetSocketQuaternion(sockets.rotationSocketName)};
 
-	double weaponDistance {FVector::Distance(startSocketLocation, endSocketLocation)};
+		TArray<FHitResult> hitResults;
 
-	FVector boxHalfExtent {boxCollisionLength, boxCollisionLength, weaponDistance};
-	boxHalfExtent /= 2;
+		double weaponDistance {FVector::Distance(startSocketLocation, endSocketLocation)};
 
-	FCollisionShape sweepBox {FCollisionShape::MakeBox(boxHalfExtent)};
+		FVector boxHalfExtent {sockets.boxCollisionLength, sockets.boxCollisionLength, weaponDistance};
+		boxHalfExtent /= 2;
 
-	// Ignore Parameters
-	FCollisionQueryParams ignoreParams {
-		FName {TEXT("Ignore params")},
-false,
-		GetOwner()
-	};
-	
-	bool hasFoundTargets { GetWorld()->SweepMultiByChannel(
-		hitResults,
-		startSocketLocation,
-		endSocketLocation,
-		shapeRotation,
-		ECC_GameTraceChannel1,
-		sweepBox,
-		ignoreParams
-		)};
-	
-	if (debugMode) {
-		FVector centerPoint{
-			UKismetMathLibrary::VLerp(startSocketLocation, endSocketLocation, 0.5f)
+		FCollisionShape sweepBox {FCollisionShape::MakeBox(boxHalfExtent)};
+
+		// Ignore Parameters
+		FCollisionQueryParams ignoreParams {
+			FName {TEXT("Ignore params")},
+	false,
+			GetOwner()
 		};
-		
-		UKismetSystemLibrary::DrawDebugBox(
-			GetWorld(),
-			centerPoint,
-			sweepBox.GetExtent(),
-			hasFoundTargets? FLinearColor::Green : FLinearColor::Red,
-			shapeRotation.Rotator(),
-			1.0f,2.0f);
-		
-		// UE_LOG(LogTemp, Display, TEXT("Tick TargetFound Start: %s - End:%s - Rotation: %s"),
-		// 	*startSocketLocation.ToString(),*endSocketLocation.ToString(), *shapeRotation.ToString());
-	}	
+	
+		bool hasFoundTargets { GetWorld()->SweepMultiByChannel(
+			hitResults,
+			startSocketLocation,
+			endSocketLocation,
+			shapeRotation,
+			ECC_GameTraceChannel1,
+			sweepBox,
+			ignoreParams
+			)};
 
-	if (hitResults.Num() == 0) { return;}
+		allResults.Append(hitResults);
+		
+		if (sockets.debugMode) {
+			FVector centerPoint{
+				UKismetMathLibrary::VLerp(startSocketLocation, endSocketLocation, 0.5f)
+			};
+		
+			UKismetSystemLibrary::DrawDebugBox(
+				GetWorld(),
+				centerPoint,
+				sweepBox.GetExtent(),
+				hasFoundTargets? FLinearColor::Green : FLinearColor::Red,
+				shapeRotation.Rotator(),
+				1.0f,2.0f);
+		
+			// UE_LOG(LogTemp, Display, TEXT("Tick TargetFound Start: %s - End:%s - Rotation: %s"),
+			// 	*startSocketLocation.ToString(),*endSocketLocation.ToString(), *shapeRotation.ToString());
+		}
+	}
+	if (allResults.Num() == 0) { return;}
 	
 	float characterDamage{ 0.0f };
 
@@ -93,7 +98,7 @@ false,
 
 	UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), characterDamage);
 
-	for (const FHitResult& Hit: hitResults) {
+	for (const FHitResult& Hit: allResults) {
 		FDamageEvent targetAttackedEvent;
 		AActor* hitActor {Cast<AActor>(Hit.GetActor())};
 
