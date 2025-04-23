@@ -67,9 +67,11 @@ void UCombatComponent::resetAttack() {
 }
 
 void UCombatComponent::randomAttack() {
-	int RandomIndex {
-		FMath::RandRange(0, attackMontages.Num()-1)
-	};
-	animationDuration = characterReference->PlayAnimMontage(attackMontages[RandomIndex]);
+	if (canAttack) {
+		int RandomIndex {
+			FMath::RandRange(0, attackMontages.Num()-1)
+		};
+		animationDuration = characterReference->PlayAnimMontage(attackMontages[RandomIndex]);
+	}
 }
 

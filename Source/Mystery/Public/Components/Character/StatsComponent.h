@@ -7,6 +7,17 @@
 #include "Components/ActorComponent.h"
 #include "StatsComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+	FOnHealthPercentageUpdateSignature,
+	UStatsComponent, OnHealthPercentageUpdateDelegate,
+	float, Percentage
+);
+
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+	FOnStaminaPercentageUpdateSignature,
+	UStatsComponent, OnStaminaPercentageUpdateDelegate,
+	float, Percentage
+);
 
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(
 	FOnHealthZeroSignature,
@@ -36,7 +47,13 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthZeroSignature onHealthZeroDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHealthPercentageUpdateSignature OnHealthPercentageUpdateDelegate;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnStaminaPercentageUpdateSignature OnStaminaPercentageUpdateDelegate;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -46,7 +63,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void ReduceHealth(float Amount);
+	void ReduceHealth(float Amount, AActor* attacker);
 	
 	void ReduceStatByValue(float Amount, EStat stat, EStat maxStat);
 
@@ -58,4 +75,7 @@ public:
 
 	UFUNCTION( )
 	void enableRegenerateStamina();
+
+	UFUNCTION( BlueprintPure )
+	float GetStatPercentage(EStat Current, EStat Maximum);
 };

@@ -26,4 +26,11 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void updateDirection();
+	
+public:
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool isBlocking {false} ;
+
+	
 };

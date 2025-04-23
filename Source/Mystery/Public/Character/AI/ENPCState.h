@@ -13,6 +13,7 @@ enum ENPCState
 	Idle UMETA(DisplayName = "Idle"),
 	PlayerDetected UMETA(DisplayName = "PlayerDetected"),
 	Charging UMETA(DisplayName = "Charging"),
-	Melee UMETA(DisplayName = "Melee")
+	Melee UMETA(DisplayName = "Melee"),
+	GameOver UMETA(DisplayName = "GameOver")
 	
 };

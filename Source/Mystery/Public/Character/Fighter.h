@@ -29,4 +29,6 @@ public:
 	virtual float GetAnimationDuration() const { return 0.0f ;}
 
 	virtual float GetMeleeRange() const { return 0.0f ;}
+
+	virtual bool CanTakeDamage(AActor* attacker) { return true; }
 };

@@ -20,6 +20,11 @@ public:
 	// Sets default values for this character's properties
 	AGameCharacter();
 
+	/** Components */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UStatsComponent* StatsComponent;
+
+	class AAIController* AIController;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -27,10 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* deathAnimation;
 
-	/** Components */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
-	UStatsComponent* StatsComponent;
-
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* hurtAnimationMontage;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UTraceComponent* TraceComponent;
 
@@ -52,4 +56,8 @@ public:
 	UFUNCTION()
 	void finishedDeathAnimation();
 
+	UFUNCTION(BlueprintCallable)
+	void handleHurt();
+
+	
 };

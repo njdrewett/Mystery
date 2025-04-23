@@ -12,20 +12,15 @@
 
 EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
 
-	isFinished = true;
+	isFinished = false;
 	
 	float distance {
 		OwnerComp.GetBlackboardComponent()->GetValueAsFloat("DistanceToPlayer")
 	};
-
 	
 	AAIController* AIController {OwnerComp.GetAIOwner()};
-
-	IFighter* fighter {
-		Cast<IFighter>(AIController->GetCharacter())
-	};
-
-	if (distance > fighter->GetMeleeRange()) {
+	
+	if (distance > attackRadius) {
 		APawn* playerRef {GetWorld()->GetFirstPlayerController()->GetPawn()};
 		FAIMoveRequest moveRequest { playerRef };
 		moveRequest.SetUsePathfinding(true);
@@ -36,6 +31,9 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		AIController->MoveTo(moveRequest);
 		AIController->SetFocus(playerRef);
 	} else {
+		IFighter* fighter {
+			Cast<IFighter>(AIController->GetCharacter())
+		};
 
 		fighter->attack();
 
@@ -55,12 +53,11 @@ void UBTT_MeleeAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 	AAIController* AIController {OwnerComp.GetAIOwner()};
 	
-
 	IFighter* fighter {
 		Cast<IFighter>(AIController->GetCharacter())
 	};
 
-	if (Distance> fighter->GetMeleeRange()) {
+	if (Distance > fighter->GetMeleeRange()) {
 		OwnerComp.GetBlackboardComponent()->SetValueAsEnum("CurrentState", ENPCState::PlayerDetected);
 		AbortTask(OwnerComp, NodeMemory);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Aborted);

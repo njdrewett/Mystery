@@ -101,8 +101,8 @@ void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	for (const FHitResult& Hit: allResults) {
 		FDamageEvent targetAttackedEvent;
 		AActor* hitActor {Cast<AActor>(Hit.GetActor())};
-
-		if (targetsToIgnore.Contains(hitActor)) { continue; }
+		
+		if (targetsToIgnore.Contains(hitActor)) { UE_LOG(LogTemp, Warning, TEXT("Ignoring Actor")); continue; }
 		
 		hitActor->TakeDamage(
 			characterDamage,

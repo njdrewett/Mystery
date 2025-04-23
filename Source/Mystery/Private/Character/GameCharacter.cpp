@@ -3,8 +3,11 @@
 
 #include "Character/GameCharacter.h"
 
+#include "AIController.h"
+#include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/Combat/CombatComponent.h"
+#include "Player/MainPlayer.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter()
@@ -65,17 +68,30 @@ void AGameCharacter::handleDeath() {
 			deathDuration, false
 		);
 
-//	aiControllerReference->GetBrainComponent()->StopLogic("defeated");
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController != nullptr) {
+		DisableInput(PlayerController);
+	}
+
+	if (AIController != nullptr) {
+		AIController->GetBrainComponent()->StopLogic("defeated");
+	}
 
 	FindComponentByClass<UCapsuleComponent>()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// IMainPlayer* mainPlayer{ GetWorld()->GetFirstPlayerController()->GetPawn<IMainPlayer>()};
-	//
-	// if (!mainPlayer) { return; }
-	//
-	// mainPlayer->endLockOnWithActor(this);
+	IMainPlayer* mainPlayer{ GetWorld()->GetFirstPlayerController()->GetPawn<IMainPlayer>()};
+	
+	if (!mainPlayer) { return; }
+	
+	mainPlayer->EndLockOnWithActor(this);
 }
 
 void AGameCharacter::finishedDeathAnimation() {
 	Destroy();
+}
+
+void AGameCharacter::handleHurt() {
+	if (hurtAnimationMontage == nullptr) { return; }
+	
+	PlayAnimMontage(hurtAnimationMontage);
 }

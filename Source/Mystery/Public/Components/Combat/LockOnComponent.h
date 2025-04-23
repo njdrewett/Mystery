@@ -33,6 +33,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Components")
 	FOnUpdatedTargetSignature OnUpdatedTargetDelegate;
+
+	AActor* GetCurrentActorTarget() const { return currentTargetActor; };
 	
 protected:
 	// Called when the game starts
@@ -43,10 +45,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void startLockOn(float traceRadius = 750.0f);
-
-	UFUNCTION(BlueprintCallable)
-	void endLockOn();
+	
 	void lookAtCurrentTarget(FVector& targetLocation, FVector currentLocation) const;
+
 	bool outsideBreakDistance(FVector targetLocation, FVector currentLocation) const;
 
 	UPROPERTY(EditAnywhere)
@@ -70,5 +71,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable)
+	void endLockOn();
 		
 };

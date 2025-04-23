@@ -24,4 +24,6 @@ class MYSTERY_API IMainPlayer
 public:
 
 	virtual bool HasStamina(float cost) const { return true; };
+
+	virtual void EndLockOnWithActor(AActor* actorReference) {};
 };

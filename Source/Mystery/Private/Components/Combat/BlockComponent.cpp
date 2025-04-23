@@ -3,6 +3,9 @@
 
 #include "Components/Combat/BlockComponent.h"
 
+#include "GameFramework/Character.h"
+#include "Player/MainPlayer.h"
+
 // Sets default values for this component's properties
 UBlockComponent::UBlockComponent()
 {
@@ -30,5 +33,30 @@ void UBlockComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+bool UBlockComponent::Check(AActor* attacker) {
+
+	ACharacter* characterRef {GetOwner<ACharacter>()};
+
+	if (!characterRef->Implements<UMainPlayer>()) {return true;	}
+
+	IMainPlayer* mainPlayer {Cast<IMainPlayer>(characterRef)};
+
+	FVector attackerForward {attacker->GetActorForwardVector()};
+	FVector playerForward {characterRef->GetActorForwardVector()};
+
+	double dotProduct {FVector::DotProduct(attackerForward, playerForward)};
+	if (dotProduct > 0.0 || !mainPlayer->HasStamina(StaminaCost)) {
+		UE_LOG(LogTemp, Warning, TEXT("Attacker is not facing or not enough stamina"));
+		return true;
+	}
+
+	characterRef->PlayAnimMontage(blockAnimMontage);
+
+	OnBlockDelegate.Broadcast(StaminaCost);
+	
+	return false;
+		
 }
 

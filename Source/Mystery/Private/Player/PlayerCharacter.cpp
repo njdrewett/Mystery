@@ -20,6 +20,8 @@ APlayerCharacter::APlayerCharacter():Super()
 	PlayerActionsComponent = CreateDefaultSubobject<UPlayerActionsComponent>(TEXT("PlayerActionsComponent"));
 	//PlayerActionsComponent->RegisterComponent();
 
+	BlockComponent = CreateDefaultSubobject<UBlockComponent>(TEXT("BlockComponent"));
+
 }
 
 // Called when the game starts or when spawned
@@ -44,5 +46,21 @@ bool APlayerCharacter::HasStamina(float cost) const {
 	}
 	
 	return (StatsComponent->Stats[Stamina] > cost);
+}
+
+void APlayerCharacter::EndLockOnWithActor(AActor* actorReference) {
+	if (LockOnComponent->GetCurrentActorTarget() != actorReference) { return;}
+
+	LockOnComponent->endLockOn();
+	
+}
+
+bool APlayerCharacter::CanTakeDamage(AActor* attacker) {
+	
+	if (playerAnimInstance->isBlocking) {
+		
+		return BlockComponent->Check(attacker);
+	}
+	return true;
 }
 

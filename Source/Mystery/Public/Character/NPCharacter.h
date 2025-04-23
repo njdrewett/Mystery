@@ -17,7 +17,7 @@ class MYSTERY_API ANPCharacter : public AGameCharacter, public ILockOnable {
 
 	class UBlackboardComponent* BlackboardComponent;
 
-	
+
 public:
 	// Sets default values for this character's properties
 	ANPCharacter();
@@ -41,4 +41,7 @@ public:
 	virtual float GetAnimationDuration() const override;
 
 	virtual float GetMeleeRange() const override;
+
+	UFUNCTION(BlueprintCallable)
+	void HandlePlayerDeath();
 };

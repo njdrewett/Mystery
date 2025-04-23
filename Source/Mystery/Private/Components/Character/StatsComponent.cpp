@@ -2,6 +2,8 @@
 
 
 #include "Components/Character/StatsComponent.h"
+
+#include "Character/Fighter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -31,11 +33,22 @@ void UStatsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	// ...
 }
 
-void UStatsComponent::ReduceHealth(float Amount) {
+void UStatsComponent::ReduceHealth(float Amount, AActor* attacker) {
 
+	if (Stats[Health] <= 0 ) {return ;}
+
+	IFighter* fighter { GetOwner<IFighter>()};
+
+	if (!fighter->CanTakeDamage(attacker)) {
+		return;
+	}
+	
 	UE_LOG(LogActorComponent, Warning, TEXT("'%s' Reducing health "), *GetNameSafe(this));
 	ReduceStatByValue(Amount, Health, MaxHealth);
 
+	OnHealthPercentageUpdateDelegate.Broadcast(
+		GetStatPercentage(Health, MaxHealth));
+	
 	if (Stats[Health] <= 0) {
 		onHealthZeroDelegate.Broadcast();
 	}
@@ -67,6 +80,10 @@ void UStatsComponent::ReduceStamina(float Amount) {
 		staminaRegenerationDelay,
 		flatentInfo
 	);
+
+	OnStaminaPercentageUpdateDelegate.Broadcast(
+		GetStatPercentage(Stamina, MaxStamina));
+	
 }
 
 void UStatsComponent::RegenerateStamina() {
@@ -79,10 +96,23 @@ void UStatsComponent::RegenerateStamina() {
 			Stats[MaxStamina],
 			GetWorld()->DeltaTimeSeconds ,
 			staminaRegenerationRate);
+		OnStaminaPercentageUpdateDelegate.Broadcast(
+			GetStatPercentage(Stamina, MaxStamina));
+
 	}
 }
 
 void UStatsComponent::enableRegenerateStamina() {
 	canRegenerateStamina = true;
+}
+
+float UStatsComponent::GetStatPercentage(const EStat Current, const EStat Maximum) {
+	if (Stats.Contains(Current) && Stats.Contains(Maximum)) {
+		return Stats[Current] / Stats[Maximum];
+	}
+	UE_LOG(LogActorComponent, Error, TEXT("'%s' Calling Get Stat precentage but missing values for %d , %d"), *GetNameSafe(this),
+		Current, Maximum);
+	
+	return 0.0f;
 }
 
