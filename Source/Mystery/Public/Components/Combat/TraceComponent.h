@@ -19,6 +19,9 @@ class MYSTERY_API UTraceComponent : public UActorComponent
 	TArray<FTraceSockets> TraceSockets;
 	
 	TArray<AActor*> targetsToIgnore;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* hitParticleTemplate;
 	
 public:	
 

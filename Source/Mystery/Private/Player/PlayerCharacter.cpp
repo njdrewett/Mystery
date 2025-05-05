@@ -56,6 +56,8 @@ void APlayerCharacter::EndLockOnWithActor(AActor* actorReference) {
 }
 
 bool APlayerCharacter::CanTakeDamage(AActor* attacker) {
+
+	if (PlayerActionsComponent->isRollActive) { return false; }
 	
 	if (playerAnimInstance->isBlocking) {
 		

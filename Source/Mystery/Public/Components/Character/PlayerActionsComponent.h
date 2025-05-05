@@ -13,6 +13,13 @@ DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
 	OnSprintDelegate,
 	float, cost);
 
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
+	FOnRollSignature,
+	UPlayerActionsComponent,
+	OnRollDelegate,
+	float, cost);
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYSTERY_API UPlayerActionsComponent : public UActorComponent
 {
@@ -33,13 +40,24 @@ class MYSTERY_API UPlayerActionsComponent : public UActorComponent
 	UPROPERTY(EditAnywhere)
 	float walkSpeed {500.0f};
 
+	UPROPERTY(EditAnywhere)
+	float rollCost {5.0f};
+	
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* rollAnimMotange;
+	
 public:	
 	// Sets default values for this component's properties
 	UPlayerActionsComponent();
 
 	UPROPERTY(BlueprintAssignable)
 	FOnSprintSignature OnSprintDelegate;
-	
+
+	UPROPERTY(BlueprintAssignable)
+	FOnRollSignature OnRollDelegate;
+
+	bool isRollActive {false};
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -53,5 +71,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void walk();
-	
+
+	UFUNCTION(BlueprintCallable)
+	void roll();
+
+	UFUNCTION()
+	void RollAnimationFinished();
 };

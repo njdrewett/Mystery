@@ -57,7 +57,5 @@ public:
 	void finishedDeathAnimation();
 
 	UFUNCTION(BlueprintCallable)
-	void handleHurt();
-
-	
+	void handleHurt(TSubclassOf<class UCameraShakeBase> cameraShakeTemplate);
 };

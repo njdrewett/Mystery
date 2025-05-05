@@ -90,8 +90,12 @@ void AGameCharacter::finishedDeathAnimation() {
 	Destroy();
 }
 
-void AGameCharacter::handleHurt() {
+void AGameCharacter::handleHurt(TSubclassOf<class UCameraShakeBase> cameraShakeTemplate) {
 	if (hurtAnimationMontage == nullptr) { return; }
 	
 	PlayAnimMontage(hurtAnimationMontage);
+
+	if (cameraShakeTemplate != nullptr) {
+		GetController<APlayerController>()->ClientStartCameraShake(cameraShakeTemplate);
+	}
 }
