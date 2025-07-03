@@ -9,14 +9,17 @@
 #include "Character/AI/ENPCState.h"
 #include "Navigation/PathFollowingComponent.h"
 
-void UBTT_Charge::ChargeAtPlayer() {
+/**
+ * AI Task to charge at the player.
+ */
+void UBTT_Charge::ChargeAtPlayer() const {
 	UE_LOG(LogTemp, Warning, TEXT("ChargeAtPlayer called"));
 
-	APawn* playerPawn {GetWorld()->GetFirstPlayerController()->GetPawn()};
+	APawn* playerPawn{GetWorld()->GetFirstPlayerController()->GetPawn()};
 
-	FVector playerLocation { playerPawn->GetActorLocation()};
+	FVector playerLocation{playerPawn->GetActorLocation()};
 
-	FAIMoveRequest moveRequest {playerLocation};
+	FAIMoveRequest moveRequest{playerLocation};
 	moveRequest.SetUsePathfinding(true);
 	moveRequest.SetAcceptanceRadius(acceptanceRadius);
 
@@ -26,35 +29,32 @@ void UBTT_Charge::ChargeAtPlayer() {
 }
 
 void UBTT_Charge::HandleMoveCompleted() {
-
 	npcAnimInstance->isCharging = false;
 	FTimerHandle timerHandle;
-	character->GetWorldTimerManager().SetTimer(timerHandle,this,
-		&UBTT_Charge::FinishChargeTask,1.0f,false);
+
+	character->GetWorldTimerManager().SetTimer(timerHandle, this,
+	                                           &UBTT_Charge::FinishChargeTask, 1.0f, false);
 }
 
 void UBTT_Charge::FinishChargeTask() {
 	UE_LOG(LogTemp, Warning, TEXT("FinishChargeTask called"));
-
 	isFinished = true;
 }
 
 void UBTT_Charge::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
-	bool isReadyToCharge = OwnerComp.GetBlackboardComponent()->GetValueAsBool("isReadyToCharge");
-	if (isReadyToCharge) {
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool("isReadyToCharge")) {
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool("isReadyToCharge", false);
-
 		ChargeAtPlayer();
 	}
 
 	if (!isFinished) { return; }
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsEnum("CurrentState", ENPCState::Melee);
-	
+
 	aiController->ReceiveMoveCompleted.Remove(MoveCompletedDelegate);
-	
-	FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
+
+	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 }
 
 UBTT_Charge::UBTT_Charge() {
@@ -64,7 +64,6 @@ UBTT_Charge::UBTT_Charge() {
 }
 
 EBTNodeResult::Type UBTT_Charge::ExecuteTask(UBehaviorTreeComponent& Comp, uint8* NodeMemory) {
-
 	aiController = Comp.GetAIOwner();
 
 	character = aiController->GetCharacter();
@@ -73,9 +72,9 @@ EBTNodeResult::Type UBTT_Charge::ExecuteTask(UBehaviorTreeComponent& Comp, uint8
 
 	npcAnimInstance->isCharging = true;
 
-	Comp.GetBlackboardComponent()->SetValueAsBool("isReadyToCharge",true);
+	Comp.GetBlackboardComponent()->SetValueAsBool("isReadyToCharge", true);
 
 	isFinished = false;
-	
+
 	return EBTNodeResult::InProgress;
 }

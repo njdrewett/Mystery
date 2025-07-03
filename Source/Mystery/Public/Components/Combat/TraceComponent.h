@@ -7,7 +7,9 @@
 #include "Components/ActorComponent.h"
 #include "TraceComponent.generated.h"
 
-
+/**
+ * Trace Component is used to trace a weapons collision to detect impacts with other actors.
+ */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYSTERY_API UTraceComponent : public UActorComponent
 {
@@ -29,12 +31,11 @@ public:
 	UTraceComponent();
 
 	UPROPERTY(VisibleAnywhere)
-	bool isAttacking { false };
+	bool isTracing { false };
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
 
 public:	
 	// Called every frame

@@ -8,16 +8,14 @@
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class ULockOnable : public UInterface
-{
+class ULockOnable : public UInterface {
 	GENERATED_BODY()
 };
 
 /**
  * 
  */
-class MYSTERY_API ILockOnable
-{
+class MYSTERY_API ILockOnable {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
@@ -27,6 +25,4 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void onRemoveLockOn();
-
-
 };

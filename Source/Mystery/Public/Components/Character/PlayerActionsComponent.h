@@ -20,9 +20,8 @@ DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(
 	float, cost);
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MYSTERY_API UPlayerActionsComponent : public UActorComponent
-{
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class MYSTERY_API UPlayerActionsComponent : public UActorComponent {
 	GENERATED_BODY()
 
 	ACharacter* Character;
@@ -32,21 +31,21 @@ class MYSTERY_API UPlayerActionsComponent : public UActorComponent
 	IMainPlayer* IMainPlayer;
 
 	UPROPERTY(EditAnywhere)
-	float sprintSpeed {750.0f};
+	float sprintSpeed{750.0f};
 
 	UPROPERTY(EditAnywhere)
-	float sprintCost {0.5f};
+	float sprintCost{0.5f};
 
 	UPROPERTY(EditAnywhere)
-	float walkSpeed {500.0f};
+	float walkSpeed{500.0f};
 
 	UPROPERTY(EditAnywhere)
-	float rollCost {5.0f};
-	
+	float rollCost{5.0f};
+
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* rollAnimMotange;
-	
-public:	
+
+public:
 	// Sets default values for this component's properties
 	UPlayerActionsComponent();
 
@@ -56,15 +55,16 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnRollSignature OnRollDelegate;
 
-	bool isRollActive {false};
+	bool isRollActive{false};
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
 	void sprint();

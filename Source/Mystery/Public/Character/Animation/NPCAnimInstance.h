@@ -10,13 +10,10 @@
  * 
  */
 UCLASS()
-class MYSTERY_API UNPCAnimInstance : public UAnimInstance
-{
+class MYSTERY_API UNPCAnimInstance : public UAnimInstance {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Animation)
-	bool isCharging {false};
-	
-	
+	bool isCharging{false};
 };

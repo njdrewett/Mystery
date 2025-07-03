@@ -14,8 +14,6 @@ ULockOnComponent::ULockOnComponent() {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -35,7 +33,8 @@ void ULockOnComponent::BeginPlay() {
 void ULockOnComponent::toggleLockOn(float traceRadius) {
 	if (IsValid(currentTargetActor)) {
 		endLockOn();
-	} else {
+	}
+	else {
 		startLockOn(traceRadius);
 	}
 }
@@ -49,44 +48,42 @@ void ULockOnComponent::startLockOn(float traceRadius) {
 
 	const FCollisionShape sphereCollisionShape{FCollisionShape::MakeSphere(traceRadius)};
 	const FCollisionQueryParams ignoreParams{
-		FName{TEXT("Ignore Collision Parameters")},
-		true,
-		ownerCharacter
-	};
+			FName{TEXT("Ignore Collision Parameters")},
+			true,
+			ownerCharacter
+		};
 
 	const bool hasFoundTarget{
-		GetWorld()->SweepSingleByChannel(
-			outResult,
-			currentLocation,
-			currentLocation,
-			FQuat::Identity,
-			ECollisionChannel::ECC_GameTraceChannel1,
-			sphereCollisionShape,
-			ignoreParams
-		)
-	};
+			GetWorld()->SweepSingleByChannel(
+				outResult,
+				currentLocation,
+				currentLocation,
+				FQuat::Identity,
+				ECollisionChannel::ECC_GameTraceChannel1,
+				sphereCollisionShape,
+				ignoreParams
+			)
+		};
 
 	if (!hasFoundTarget) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("LockOn : Has found Target %s"), *outResult.GetActor()->GetName());
 
-	AActor* targetActor =  outResult.GetActor();
+	AActor* targetActor = outResult.GetActor();
 
-	if (!targetActor->Implements<ULockOnable>()) {return;}
-	
+	if (!targetActor->Implements<ULockOnable>()) { return; }
+
 	lockOnTarget(targetActor);
-
 }
 
 void ULockOnComponent::lockOnTarget(AActor* targetActor) {
-
 	if (!IsValid(targetActor)) { return; }
-	
+
 	currentTargetActor = targetActor;
 	playerController->SetIgnoreLookInput(true);
 	characterMovementComponent->bOrientRotationToMovement = false;
 	characterMovementComponent->bUseControllerDesiredRotation = true;
-	
+
 	originalCameraTargetOffSet = springArmComponent->TargetOffset;
 	springArmComponent->TargetOffset = cameraTargetOffSet;
 
@@ -97,38 +94,35 @@ void ULockOnComponent::lockOnTarget(AActor* targetActor) {
 }
 
 void ULockOnComponent::removeLockOn() {
-
 	ILockOnable::Execute_onRemoveLockOn(currentTargetActor);
 	currentTargetActor = nullptr;
 
 	playerController->ResetIgnoreLookInput();
 	characterMovementComponent->bOrientRotationToMovement = true;
 	characterMovementComponent->bUseControllerDesiredRotation = false;
-	
+
 	springArmComponent->TargetOffset = originalCameraTargetOffSet;
 
 	OnUpdatedTargetDelegate.Broadcast(currentTargetActor);
-
 }
 
 void ULockOnComponent::endLockOn() {
-
 	UE_LOG(LogTemp, Warning, TEXT("EndLockOn : "));
-	
+
 	removeLockOn();
 }
 
 
 void ULockOnComponent::lookAtCurrentTarget(FVector& targetLocation, const FVector currentLocation) const {
 	targetLocation.Z -= lookAtTargetZOffSet;
-	
+
 	const FRotator rotation{UKismetMathLibrary::FindLookAtRotation(currentLocation, targetLocation)};
 
 	playerController->SetControlRotation(rotation);
 }
 
 bool ULockOnComponent::outsideBreakDistance(FVector targetLocation, const FVector currentLocation) const {
-	double currentDistance = { FVector::Distance(targetLocation, currentLocation)};
+	double currentDistance = {FVector::Distance(targetLocation, currentLocation)};
 	return currentDistance >= lockOnBreakDistance;
 }
 
@@ -142,7 +136,7 @@ void ULockOnComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	FVector targetLocation{currentTargetActor->GetActorLocation()};
 	const FVector currentLocation{ownerCharacter->GetActorLocation()};
 
-	if (outsideBreakDistance(targetLocation, currentLocation)){
+	if (outsideBreakDistance(targetLocation, currentLocation)) {
 		endLockOn();
 		return;
 	}

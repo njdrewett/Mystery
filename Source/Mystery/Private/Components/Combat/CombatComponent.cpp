@@ -7,6 +7,10 @@
 #include "GameFramework/Character.h"
 #include "Player/MainPlayer.h"
 
+/**
+ * Component to handle combat actions such as attacking and resetting attacks.
+ * It manages the attack animations and stamina costs.
+ **/
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
 {
@@ -14,17 +18,13 @@ UCombatComponent::UCombatComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ... 
 	characterReference = GetOwner<ACharacter>();
 }
 
 
 // Called when the game starts
-void UCombatComponent::BeginPlay()
-{
+void UCombatComponent::BeginPlay() {
 	Super::BeginPlay();
-
-	// ...
 	
 }
 
@@ -34,7 +34,6 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 void UCombatComponent::attack() {
@@ -68,9 +67,7 @@ void UCombatComponent::resetAttack() {
 
 void UCombatComponent::randomAttack() {
 	if (canAttack) {
-		int RandomIndex {
-			FMath::RandRange(0, attackMontages.Num()-1)
-		};
+		int RandomIndex { FMath::RandRange(0, attackMontages.Num()-1)};
 		animationDuration = characterReference->PlayAnimMontage(attackMontages[RandomIndex]);
 	}
 }

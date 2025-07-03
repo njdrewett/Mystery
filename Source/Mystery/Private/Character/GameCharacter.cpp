@@ -9,41 +9,35 @@
 #include "Components/Combat/CombatComponent.h"
 #include "Player/MainPlayer.h"
 
+/**
+ * GameCharacter class that extends ACharacter and implements IFighter interface.
+ * It contains components for stats, combat, and tracing, and handles character death and damage.
+ */
 // Sets default values
-AGameCharacter::AGameCharacter()
-{
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+AGameCharacter::AGameCharacter() {
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	// Components
 	StatsComponent = CreateDefaultSubobject<UStatsComponent>(TEXT("StatsComponent"));
-	StatsComponent->RegisterComponent();
-	
+
 	TraceComponent = CreateDefaultSubobject<UTraceComponent>(TEXT("TraceComponent"));
-	TraceComponent->RegisterComponent();
-	
+
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
-	CombatComponent->RegisterComponent();
 }
 
 // Called when the game starts or when spawned
-void AGameCharacter::BeginPlay()
-{
+void AGameCharacter::BeginPlay() {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
-void AGameCharacter::Tick(float DeltaTime)
-{
+void AGameCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
-void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
+void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 float AGameCharacter::GetDamage() const {
@@ -55,18 +49,17 @@ float AGameCharacter::GetDamage() const {
 }
 
 void AGameCharacter::handleDeath() {
-
 	if (!deathAnimation) { return; }
 
-	float deathDuration { PlayAnimMontage(deathAnimation) };
+	float deathDuration{PlayAnimMontage(deathAnimation)};
 
 	FTimerHandle deathAnimationCompletedTimerHandle{};
 
 	GetWorldTimerManager().SetTimer(
-			deathAnimationCompletedTimerHandle,
-			this, &AGameCharacter::finishedDeathAnimation,
-			deathDuration, false
-		);
+		deathAnimationCompletedTimerHandle,
+		this, &AGameCharacter::finishedDeathAnimation,
+		deathDuration, false
+	);
 
 	APlayerController* PlayerController = GetController<APlayerController>();
 	if (PlayerController != nullptr) {
@@ -79,10 +72,10 @@ void AGameCharacter::handleDeath() {
 
 	FindComponentByClass<UCapsuleComponent>()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	IMainPlayer* mainPlayer{ GetWorld()->GetFirstPlayerController()->GetPawn<IMainPlayer>()};
-	
+	IMainPlayer* mainPlayer{GetWorld()->GetFirstPlayerController()->GetPawn<IMainPlayer>()};
+
 	if (!mainPlayer) { return; }
-	
+
 	mainPlayer->EndLockOnWithActor(this);
 }
 
@@ -92,7 +85,7 @@ void AGameCharacter::finishedDeathAnimation() {
 
 void AGameCharacter::handleHurt(TSubclassOf<class UCameraShakeBase> cameraShakeTemplate) {
 	if (hurtAnimationMontage == nullptr) { return; }
-	
+
 	PlayAnimMontage(hurtAnimationMontage);
 
 	if (cameraShakeTemplate != nullptr) {

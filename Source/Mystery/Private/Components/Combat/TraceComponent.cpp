@@ -35,7 +35,7 @@ void UTraceComponent::BeginPlay()
 void UTraceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (!isAttacking) { return ; }
+	if (!isTracing) { return ; }
 	// ...
 
 	TArray<FHitResult> allResults;

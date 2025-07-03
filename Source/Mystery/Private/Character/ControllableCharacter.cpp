@@ -15,10 +15,13 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
+/**
+ * AControllableCharacter is a base class for characters that can be controlled by the player.
+ * It sets up the character's movement, camera, and input bindings.
+ */
 // Sets default values
-AControllableCharacter::AControllableCharacter()
-{
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+AControllableCharacter::AControllableCharacter() {
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set size for collision capsule
@@ -50,47 +53,43 @@ AControllableCharacter::AControllableCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-
 }
 
 // Called when the game starts or when spawned
-void AControllableCharacter::BeginPlay()
-{
+void AControllableCharacter::BeginPlay() {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
-void AControllableCharacter::Tick(float DeltaTime)
-{
+void AControllableCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Input
-
+//////////////////////////////////////////////////////////////////////////
 
 // Called to bind functionality to input
-void AControllableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
+void AControllableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController())) {
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
-	} else {
+	}
+	else {
 		UE_LOG(LogTemplateCharacter, Error, TEXT("No Player Controller"));
 	}
 
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -100,8 +99,12 @@ void AControllableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AControllableCharacter::Look);
-	} else {
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	}
+	else {
+		UE_LOG(LogTemplateCharacter, Error,
+		       TEXT(
+			       "'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."
+		       ), *GetNameSafe(this));
 	}
 }
 
@@ -135,5 +138,3 @@ void AControllableCharacter::Look(const FInputActionValue& Value) {
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-
-

@@ -11,32 +11,25 @@
 #include "Player/Animation/PlayerAnimInstance.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter():Super()
-{
+APlayerCharacter::APlayerCharacter() {
 	// Components
 	LockOnComponent = CreateDefaultSubobject<ULockOnComponent>(TEXT("LockOnComponent"));
-	//LockOnComponent->RegisterComponent();
-	
+
 	PlayerActionsComponent = CreateDefaultSubobject<UPlayerActionsComponent>(TEXT("PlayerActionsComponent"));
-	//PlayerActionsComponent->RegisterComponent();
 
 	BlockComponent = CreateDefaultSubobject<UBlockComponent>(TEXT("BlockComponent"));
-
 }
 
 // Called when the game starts or when spawned
-void APlayerCharacter::BeginPlay()
-{
+void APlayerCharacter::BeginPlay() {
 	Super::BeginPlay();
 
 	playerAnimInstance = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
 // Called every frame
-void APlayerCharacter::Tick(float DeltaTime)
-{
+void APlayerCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
 }
 
 bool APlayerCharacter::HasStamina(float cost) const {
@@ -44,25 +37,21 @@ bool APlayerCharacter::HasStamina(float cost) const {
 		UE_LOG(LogActor, Warning, TEXT("'%s' No stats details for Stamina"), *GetNameSafe(this));
 		return false;
 	}
-	
+
 	return (StatsComponent->Stats[Stamina] > cost);
 }
 
 void APlayerCharacter::EndLockOnWithActor(AActor* actorReference) {
-	if (LockOnComponent->GetCurrentActorTarget() != actorReference) { return;}
+	if (LockOnComponent->GetCurrentActorTarget() != actorReference) { return; }
 
 	LockOnComponent->endLockOn();
-	
 }
 
 bool APlayerCharacter::CanTakeDamage(AActor* attacker) {
-
 	if (PlayerActionsComponent->isRollActive) { return false; }
-	
+
 	if (playerAnimInstance->isBlocking) {
-		
 		return BlockComponent->Check(attacker);
 	}
 	return true;
 }
-

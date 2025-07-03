@@ -23,7 +23,7 @@ class MYSTERY_API UBTT_Charge : public UBTTaskNode
 	UPROPERTY(EditAnywhere)
 	float acceptanceRadius {100.0f};
 
-	void ChargeAtPlayer();
+	void ChargeAtPlayer() const;
 
 	UFUNCTION()
 	void HandleMoveCompleted();

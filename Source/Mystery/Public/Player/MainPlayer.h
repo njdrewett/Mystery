@@ -8,21 +8,18 @@
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UMainPlayer : public UInterface
-{
+class UMainPlayer : public UInterface {
 	GENERATED_BODY()
 };
 
 /**
  * 
  */
-class MYSTERY_API IMainPlayer
-{
+class MYSTERY_API IMainPlayer {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-
 	virtual bool HasStamina(float cost) const { return true; };
 
 	virtual void EndLockOnWithActor(AActor* actorReference) {};

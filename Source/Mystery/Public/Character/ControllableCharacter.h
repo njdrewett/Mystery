@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameCharacter.h"
-#include "GameFramework/Character.h"
 #include "ControllableCharacter.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -16,8 +15,7 @@ class UInputAction;
 struct FInputActionValue;
 
 UCLASS()
-class MYSTERY_API AControllableCharacter : public AGameCharacter
-{
+class MYSTERY_API AControllableCharacter : public AGameCharacter {
 	GENERATED_BODY()
 
 	/** Camera boom positioning the camera behind the character */
@@ -49,7 +47,6 @@ public:
 	AControllableCharacter();
 
 protected:
-
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -62,7 +59,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

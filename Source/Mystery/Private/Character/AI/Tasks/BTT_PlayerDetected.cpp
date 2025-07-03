@@ -12,6 +12,12 @@
 
 class IFighter;
 
+/**
+ * AI Task to detect the player and change the state based on the distance.
+ * If the player is within melee range, it will set the state to Melee.
+ * If the player is out of melee range, it will set the state to Charging.
+ */
+
 EBTNodeResult::Type UBTT_PlayerDetected::ExecuteTask(UBehaviorTreeComponent& Comp, uint8* NodeMemory) {
 	if (!CharacterRef) {
 		CharacterRef = Cast<ACharacter>(Comp.GetAIOwner()->GetPawn());

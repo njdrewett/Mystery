@@ -11,10 +11,8 @@
 #include "GameCharacter.generated.h"
 
 UCLASS()
-class MYSTERY_API AGameCharacter : public ACharacter, public IFighter
-{
+class MYSTERY_API AGameCharacter : public ACharacter, public IFighter {
 	GENERATED_BODY()
-
 
 public:
 	// Sets default values for this character's properties
@@ -25,6 +23,7 @@ public:
 	UStatsComponent* StatsComponent;
 
 	class AAIController* AIController;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -34,19 +33,19 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* hurtAnimationMontage;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UTraceComponent* TraceComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UCombatComponent* CombatComponent;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent( UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	virtual float GetDamage() const override;
 

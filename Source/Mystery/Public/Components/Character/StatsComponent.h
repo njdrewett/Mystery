@@ -24,9 +24,8 @@ DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(
 	UStatsComponent, onHealthZeroDelegate
 );
 
-UCLASS( ClassGroup=(Custom),Blueprintable, BlueprintType, meta=(BlueprintSpawnableComponent) )
-class MYSTERY_API UStatsComponent : public UActorComponent
-{
+UCLASS(ClassGroup=(Custom), Blueprintable, BlueprintType, meta=(BlueprintSpawnableComponent))
+class MYSTERY_API UStatsComponent : public UActorComponent {
 	GENERATED_BODY()
 
 public:
@@ -37,20 +36,20 @@ public:
 	TMap<TEnumAsByte<EStat>, float> Stats;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float staminaRegenerationRate { 10.0f };
+	float staminaRegenerationRate{10.0f};
 
 	UPROPERTY(VisibleAnywhere)
-	bool canRegenerateStamina {true};
+	bool canRegenerateStamina{true};
 
 	UPROPERTY(EditAnywhere)
-	float staminaRegenerationDelay {2.0f};
+	float staminaRegenerationDelay{2.0f};
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthZeroSignature onHealthZeroDelegate;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthPercentageUpdateSignature OnHealthPercentageUpdateDelegate;
-	
+
 	UPROPERTY(BlueprintAssignable)
 	FOnStaminaPercentageUpdateSignature OnStaminaPercentageUpdateDelegate;
 
@@ -58,24 +57,25 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
 	void ReduceHealth(float Amount, AActor* attacker);
-	
+
 	void ReduceStatByValue(float Amount, EStat stat, EStat maxStat);
 
 	UFUNCTION(BlueprintCallable)
-	void ReduceStamina(float Amount);	
+	void ReduceStamina(float Amount);
 
-	UFUNCTION( BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 	void RegenerateStamina();
 
-	UFUNCTION( )
+	UFUNCTION()
 	void enableRegenerateStamina();
 
-	UFUNCTION( BlueprintPure )
+	UFUNCTION(BlueprintPure)
 	float GetStatPercentage(EStat Current, EStat Maximum);
 };

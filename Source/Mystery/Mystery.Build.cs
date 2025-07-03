@@ -17,8 +17,9 @@ public class Mystery : ModuleRules
 
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				"Mystery/Private",
-				"Mystery/Tests"
+				"Mystery/Private"
+				//,
+				//"Mystery/Tests"
 			}
 		);
 
@@ -27,10 +28,15 @@ public class Mystery : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", 
 			"CoreUObject", "Engine", "InputCore", "EnhancedInput", 
-			"UnrealEd", // Add this line for test utilities
+			//"UnrealEd", // Add this line for test utilities
 			"AIModule"
               });
-		
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.AddRange(new string[] { 
+				"UnrealEd" // Add this line for test utilities
+			});
+		}	
 
 		PrivateDependencyModuleNames.AddRange(
 			new string[]

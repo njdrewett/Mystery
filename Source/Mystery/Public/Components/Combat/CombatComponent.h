@@ -17,6 +17,7 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYSTERY_API UCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
+	
 	UPROPERTY(EditAnyWhere)
 	TArray <UAnimMontage*> attackMontages;
 

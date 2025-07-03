@@ -10,27 +10,23 @@
  * 
  */
 UCLASS()
-class MYSTERY_API UPlayerAnimInstance : public UAnimInstance
-{
+class MYSTERY_API UPlayerAnimInstance : public UAnimInstance {
 	GENERATED_BODY()
+
 protected:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool isLockOnMovement{false};
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool isLockOnMovement {false} ;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float currentDirection {0.0f};	
+	float currentDirection{0.0f};
 
 	UFUNCTION(BlueprintCallable)
 	void updateLockOnTarget(AActor* lockonTarget);
 
 	UFUNCTION(BlueprintCallable)
 	void updateDirection();
-	
-public:
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool isBlocking {false} ;
 
-	
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool isBlocking{false};
 };

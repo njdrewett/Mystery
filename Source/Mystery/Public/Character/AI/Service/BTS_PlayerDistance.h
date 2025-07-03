@@ -10,11 +10,9 @@
  * 
  */
 UCLASS()
-class MYSTERY_API UBTS_PlayerDistance : public UBTService
-{
+class MYSTERY_API UBTS_PlayerDistance : public UBTService {
 	GENERATED_BODY()
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-	
 };
